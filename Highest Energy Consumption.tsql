@@ -1,0 +1,7 @@
+SELECT TOP(1) WITH TIES
+    COALESCE(eu.date, asia.date, na.date) AS date
+    , ISNULL(eu.consumption, 0) + ISNULL(asia.consumption, 0) + ISNULL(na.consumption, 0) AS total
+FROM fb_eu_energy eu
+FULL JOIN fb_asia_energy asia ON eu.date = asia.date
+FULL JOIN fb_na_energy na ON eu.date = na.date OR asia.date = na.date
+ORDER BY total DESC
