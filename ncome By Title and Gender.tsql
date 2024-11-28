@@ -1,0 +1,20 @@
+WITH TotalCompensationByEmployee AS (
+    SELECT
+          emp.id
+        , emp.employee_title
+        , emp.sex
+        , emp.salary + SUM(ISNULL(bonus.bonus, 0)) AS total_compensation
+    FROM sf_employee emp
+    JOIN sf_bonus bonus ON emp.id = bonus.worker_ref_id
+    GROUP BY 
+          emp.id
+        , emp.employee_title
+        , emp.sex
+        , emp.salary
+)
+SELECT
+    employee_title
+    , sex
+    , AVG(total_compensation) AS avg_compensation
+FROM TotalCompensationByEmployee
+GROUP BY employee_title, sex
