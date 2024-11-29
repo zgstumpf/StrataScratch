@@ -1,0 +1,18 @@
+WITH ProjectEmployeeProratedCost AS (
+    SELECT
+        project.title
+        , project.budget
+        , employee.id AS emp_id
+        ,(1.0 * employee.salary / 365) * (DATEDIFF(day, project.start_date, project.end_date)) AS employee_prorated_cost
+    FROM
+        linkedin_projects project
+    LEFT JOIN linkedin_emp_projects emp_project ON project.id = emp_project.project_id
+    LEFT JOIN linkedin_employees employee ON emp_project.emp_id = employee.id
+)
+SELECT
+    title
+    , budget
+    , CEILING(SUM(employee_prorated_cost)) AS prorated_employee_expense
+FROM ProjectEmployeeProratedCost
+GROUP BY title, budget
+HAVING CEILING(SUM(employee_prorated_cost)) > budget
