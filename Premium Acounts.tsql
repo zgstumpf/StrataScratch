@@ -1,0 +1,28 @@
+with AllDates as (
+    select
+        startDay.entry_date
+        , count(
+            case
+                when startDay.final_price != 0 then startDay.account_id
+                else null
+            end
+          ) as premium_paid_accounts
+        , count(
+            case
+                when 
+                    startDay.final_price != 0 and endDay.final_price != 0
+                        then startDay.account_id
+                else null
+            end
+          ) as premium_paid_accounts_after_7d
+    from premium_accounts_by_day startDay
+    left join premium_accounts_by_day endDay
+        on day(startDay.entry_date) < 14 -- only include first 7 dates
+        and startDay.account_id = endDay.account_id
+        and dateadd(day, 7, startDay.entry_date) = endDay.entry_date
+    group by startDay.entry_date
+)
+select
+    *
+from AllDates
+where day(entry_date) < 14
