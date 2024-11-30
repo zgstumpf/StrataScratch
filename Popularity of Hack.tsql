@@ -1,0 +1,9 @@
+select
+    emp.location
+    , avg(
+        cast(survey.popularity as float)
+      ) as avg_popularity
+from facebook_hack_survey survey
+join facebook_employees emp
+    on survey.employee_id = emp.id
+group by emp.location
