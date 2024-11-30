@@ -1,0 +1,15 @@
+with AllSalariesByDepartment as (
+    select
+        db_dept.department
+        , max(db_employee.salary) as max_salary
+    from db_employee
+    join db_dept
+        on db_employee.department_id = db_dept.id
+    group by db_dept.department
+)
+select
+    abs(
+        (select max_salary from AllSalariesByDepartment where department = 'marketing')
+        -
+        (select max_salary from AllSalariesByDepartment where department = 'engineering')
+    ) as salary_difference
