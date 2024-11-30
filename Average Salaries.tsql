@@ -1,0 +1,17 @@
+with DepartmentsByAvgSalary as (
+    select
+        department
+        , avg(
+                cast(salary as float)
+             ) as dept_avg_sal
+    from employee
+    group by department
+)
+select 
+    department.department
+    , employee.first_name
+    , employee.salary
+    , department.dept_avg_sal
+from employee
+join DepartmentsByAvgSalary department
+    on employee.department = department.department
