@@ -1,0 +1,13 @@
+with Top3CompaniesWithRanks as (
+    select 
+        company
+        , profits
+        , dense_rank() over (order by profits desc) as rank
+    from forbes_global_2010_2014
+    where rank <= 3
+)
+select
+    company
+    , profits
+from Top3CompaniesWithRanks
+order by rank
