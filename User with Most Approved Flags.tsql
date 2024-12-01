@@ -1,0 +1,12 @@
+select username
+from (
+    select top(1) with ties
+        concat(user_flags.user_firstname, ' ', user_flags.user_lastname) as username
+        , count(distinct video_id) as count
+    from user_flags
+    join flag_review
+        on user_flags.flag_id = flag_review.flag_id
+    where flag_review.reviewed_outcome = 'APPROVED'
+    group by concat(user_flags.user_firstname, ' ', user_flags.user_lastname)
+    order by count desc
+) as full_solution_data
