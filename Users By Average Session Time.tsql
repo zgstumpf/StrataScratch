@@ -1,0 +1,31 @@
+with SessionTimePerUserPerDay as (
+    select
+        user_id
+        , day(timestamp) as day
+        , datediff(
+            second
+            , max(
+                case
+                    when action = 'page_load' then timestamp
+                    else null
+                end
+              ) 
+            , min(
+                case 
+                    when action = 'page_exit' then timestamp 
+                    else null 
+                end
+              ) 
+           ) * 1.0 as session_time_seconds
+    from facebook_web_log
+    group by
+        user_id
+        , day(timestamp)
+)
+select
+    user_id
+    , avg(session_time_seconds) as avg_session_time
+from SessionTimePerUserPerDay
+group by
+    user_id
+having avg(session_time_seconds) is not null
