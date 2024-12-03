@@ -1,0 +1,30 @@
+with AssociatedRequests as (
+    select
+        sent.user_id_sender
+        , sent.user_id_receiver
+        , sent.date -- request's date is date sent
+        , accepted.action
+    from fb_friend_requests sent
+    left join fb_friend_requests accepted
+        on sent.user_id_sender = accepted.user_id_sender
+        and accepted.user_id_sender = accepted.user_id_sender
+        and sent.action = 'sent'
+        and accepted.action = 'accepted'
+    where sent.action = 'sent'
+)
+select
+    date
+    , (1.0 
+       * 
+       count(
+         case 
+            when action = 'accepted' then action
+            else null
+         end
+       )
+       /
+       count(*)
+      ) as percentage_acceptance
+from AssociatedRequests
+group by date
+order by date
