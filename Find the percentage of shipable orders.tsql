@@ -1,0 +1,9 @@
+select
+    (100.0
+     *
+     count(customers.address) 
+     /
+     count(*)
+    ) as percent_shipable
+from orders
+left join customers on orders.cust_id = customers.id
