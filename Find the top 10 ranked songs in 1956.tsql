@@ -1,0 +1,14 @@
+with t1 as (
+    select
+        *
+        , min(year_rank) over (partition by song_name) as min_rank
+    from billboard_top_100_year_end
+    where year = 1956
+)
+select top(10)
+    row_number() over (order by min_rank) as final_rank
+    , group_name
+    , song_name
+from t1
+where year_rank = min_rank
+order by final_rank
