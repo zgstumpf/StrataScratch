@@ -1,0 +1,17 @@
+with RankedStudents as (
+    select
+        student_id
+        , sat_writing
+        , row_number() over (order by sat_writing desc) as rank
+    from sat_scores
+),
+MedianScore as (
+    select
+        sat_writing
+    from RankedStudents
+    where rank = ceiling(1.0 * (select count(*) from RankedStudents) / 2)
+)
+select
+    student_id
+from sat_scores
+where sat_writing = (select sat_writing from MedianScore)
