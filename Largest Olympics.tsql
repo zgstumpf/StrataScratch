@@ -1,0 +1,10 @@
+select top(1)
+      games
+    , count(distinct id) as athletes_count
+from olympics_athletes_events
+group by games
+order by athletes_count desc
+
+select * 
+from olympics_athletes_events
+where id = 5
