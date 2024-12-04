@@ -1,0 +1,21 @@
+with ViewedPosts as (
+    select 
+        * 
+    from facebook_posts
+    where exists(select facebook_post_views.post_id from facebook_post_views where facebook_post_views.post_id = facebook_posts.post_id)
+)
+select
+    post_date
+    ,
+        100.0 
+        *
+        count(
+            case
+                when charindex('spam', post_keywords) > 0 then post_id
+                else null
+            end
+        )
+        /
+        count(*)
+from ViewedPosts
+group by post_date
