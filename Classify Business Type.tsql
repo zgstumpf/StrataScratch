@@ -1,0 +1,13 @@
+select distinct
+    business_name
+    , (case
+            when charindex('restaurant', business_name) != 0 then 'restaurant'
+            when charindex('cafe', business_name) != 0 
+              or charindex('café', business_name) != 0 
+              or charindex('coffee', business_name) != 0 
+                    then 'cafe'
+            when charindex('school', business_name) != 0 then 'school'
+            else 'other'
+       end
+      ) as business_type
+from sf_restaurant_health_violations
